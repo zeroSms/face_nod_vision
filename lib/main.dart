@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiver/iterables.dart';
 
 void main() {
   runApp(const MyApp());
@@ -6,6 +7,8 @@ void main() {
 
 // StatelessWidget: 状態が変化しないWidget
 // 「stl」と入力することで生成可能
+// ここはビルドされると、return文以下が実行されるだけで、それ以降は外部からの（ユーザーのインタラクション等）影響を受けない。つまり一度画面が描画されると、あとから再描画されることはなく状態も変わらない。
+//そして、状態が変わる部分を MyHomePage に切り分けている。
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -15,57 +18,41 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Pageaaaaaa'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 // StatefulWidget: 状態が変化するWidget
 class MyHomePage extends StatefulWidget {
+  // @required 必須なパラメータに付与．不指定の場合に警告を出してくれるため，引数の渡し忘れに気づける．
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  // このウィジェットは，アプリケーションのホーム・ページです．ステートフルとは、見た目に影響を与えるフィールドを含むステート・オブジェクト（以下に定義）を持つことを意味します。このクラスは、ステートの設定です。このクラスは、親(ここではAppウィジェット)から提供され、Stateのbuildメソッドで使用される値(ここではタイトル)を保持します。Widgetサブクラスのフィールドは、常に "final "と表示されます。
 
   final String title;
 
+  // StatefulWidget(imutable) 自体は build() メソッドを持たず、代わりに createState() で生成した State オブジェクトが子孫となる Widget を生成。その State オブジェクトは可変（mutable) で任意のデータを保持できるため、ユーザー操作などに応じてデータを変化させつつ State.setState で能動的にリビルドを発生させられるのが StatefulWidget
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // void _incrementCounter() {
+  //   // setState（状態を保持するメソッド）によって再度画面が描画
+  //   setState(() {
+  //     _counter++;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle style =
+        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -85,12 +72,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
-          //
+
           // Invoke "debug painting" (press "p" in the console, choose the
           // "Toggle Debug Paint" action from the Flutter Inspector in Android
           // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
           // to see the wireframe for each widget.
-          //
+
           // Column has various properties to control how it sizes itself and
           // how it positions its children. Here we use mainAxisAlignment to
           // center the children vertically; the main axis here is the vertical
@@ -98,21 +85,31 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            const SizedBox(height: 30),
+            ElevatedButton(
+              style: style,
+              onPressed: () {},
+              child: const Text('Connection'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: const Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+// Placeholder 仮置きの表示画面（バッテン）．作業途中であることが明確化
+// リファクター スニペットのようなもの
