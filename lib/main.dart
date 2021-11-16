@@ -58,6 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextFormField(
+              // 文章ガイドを薄く表示
+              decoration: const InputDecoration(hintText: 'port番号を入力してください'),
+              // Boxに入力されているかを判定．されていなければ以下の文章を返す．
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -65,7 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 return null;
               },
             ),
+            // 空白スペースを挿入
             const SizedBox(height: 30),
+
+            // 空白スペースを挿入
+            const SizedBox(height: 30),
+            // Connectionボタンの実装
             ElevatedButton(
               style: style,
               onPressed: () {
