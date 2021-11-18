@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 //　HTTP通信処理関数
 Future<Map<String, dynamic>> _handleHttp(port, radVal) async {
-  Map<String, dynamic> rcvjson = {'Sum': 0};
+  Map<String, dynamic> rcvjson = {};
 
   // urlの取得
   var url = Uri.parse('http://192.168.2.111:$port');
