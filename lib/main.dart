@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+// 自作ライブラリ
+import 'feedback_page.dart';
+
+enum Feedback { all, positive }
+
 void main() {
   runApp(const MyApp());
 }
@@ -41,16 +46,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
+  String _port = '';
+  Map<String, dynamic> _rcvjson = {};
+
+  // ラジオボタンのonChangedハンドラ
+  Feedback _radVal = Feedback.all;
+
+  void _onChanged(value) {
+    setState(() {
+      _radVal = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style =
         ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Form(
       key: _formKey,
       child: Center(
@@ -64,12 +76,30 @@ class _MyHomePageState extends State<MyHomePage> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
+                } else {
+                  setState(() {
+                    _port = value;
+                  });
                 }
                 return null;
               },
             ),
             // 空白スペースを挿入
             const SizedBox(height: 30),
+            const Text(
+              'フィードバック内容の選択',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            RadioListTile(
+                title: const Text('すべての反応'),
+                value: Feedback.all,
+                groupValue: _radVal,
+                onChanged: (value) => _onChanged(value)),
+            RadioListTile(
+                title: const Text('ポジティブな反応のみ'),
+                value: Feedback.positive,
+                groupValue: _radVal,
+                onChanged: (value) => _onChanged(value)),
 
             // 空白スペースを挿入
             const SizedBox(height: 30),
@@ -77,9 +107,20 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               style: style,
               onPressed: () {
+                // 入力スペースが空であるか否かを判定．空でなければ通信処理．
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')));
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('Processing Data')));
+
+                  // 画面遷移
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FirstPage(
+                                rcvjson: _rcvjson,
+                                port: _port,
+                                radVal: _radVal,
+                              )));
                 }
               },
               child: const Text('Connection'),
