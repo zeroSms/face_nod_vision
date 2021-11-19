@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 @immutable
 class FirstPage extends StatelessWidget {
   var rcvjson, port, radVal;
-  final Map<String, dynamic> initialdata = {'Sum': 0, 'ID': {}};
+  // final Map<String, dynamic> initialdata = {
+  //   'Sum': 0,
+  //   'ID': {
+  //     '0': {'head': 0, 'face': 'a'}
+  //   }
+  // };
 
   FirstPage({Key? key, required this.rcvjson, this.port, this.radVal})
       : super(key: key);
@@ -16,7 +21,7 @@ class FirstPage extends StatelessWidget {
         body: Center(
           child: StreamBuilder(
               stream: getJson(const Duration(seconds: 3), port, radVal),
-              initialData: initialdata,
+              // initialData: initialdata,
               builder: (context, stream) {
                 if (stream.connectionState == ConnectionState.done) {
                   return const Icon(
@@ -44,7 +49,7 @@ enum Expression { neutral, smile, surprise, angry }
 
 const imgList = [
   'images/neutral.PNG',
-  'images/smile.PNG',
+  'images/happy_nod.gif',
   'images/surprise.PNG',
   'images/angry.PNG',
 ];
@@ -81,7 +86,16 @@ class FeedbackAction extends StatelessWidget {
     int sum = data['Sum'];
     List idList = _returnID(data['ID']);
     String img = imgList[_returnFace(data['ID'][idList[0]]['face'])];
-    print(img);
-    return Image(image: AssetImage(img), fit: BoxFit.cover);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        for (int i = 0; i < sum; i++)
+          Image(
+              width: 400 / sum,
+              image: AssetImage(
+                  imgList[_returnFace(data['ID'][idList[i]]['face'])]),
+              fit: BoxFit.cover),
+      ],
+    );
   }
 }

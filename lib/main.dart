@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> _rcvjson = {};
 
   // ラジオボタンのonChangedハンドラ
-  Feedback _radVal = Feedback.all;
+  Feedback _radVal = Feedback.all; // 初期値
 
   void _onChanged(value) {
     setState(() {
