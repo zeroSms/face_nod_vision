@@ -20,7 +20,7 @@ class FirstPage extends StatelessWidget {
         appBar: AppBar(title: const Text("フィードバック")),
         body: Center(
           child: StreamBuilder(
-              stream: getJson(const Duration(seconds: 3), port, radVal),
+              stream: getJson(const Duration(seconds: 7), port, radVal),
               // initialData: initialdata,
               builder: (context, stream) {
                 if (stream.connectionState == ConnectionState.done) {
@@ -48,10 +48,33 @@ class FirstPage extends StatelessWidget {
 enum Expression { neutral, smile, surprise, angry }
 
 const imgList = [
-  'images/neutral.PNG',
-  'images/happy_nod.gif',
-  'images/surprise.PNG',
-  'images/angry.PNG',
+  [
+    'images/NoEmotion.png',
+    'images/joy.png',
+    'images/surprise.png',
+    'images/sad.png',
+    'images/angry.png',
+    'images/fear.png',
+    'images/disgust.png',
+  ],
+  [
+    'images/gif/NoEmotion_nod.gif',
+    'images/gif/joy_nod.gif',
+    'images/gif/surprise_nod.gif',
+    'images/gif/sad_nod.gif',
+    'images/gif/angry_nod.gif',
+    'images/gif/fear_nod.gif',
+    'images/gif/disgust_nod.gif',
+  ],
+  [
+    'images/gif/NoEmotion_shake.gif',
+    'images/gif/joy_shake.gif',
+    'images/gif/surprise_shake.gif',
+    'images/gif/sad_shake.gif',
+    'images/gif/angry_shake.gif',
+    'images/gif/fear_shake.gif',
+    'images/gif/disgust_shake.gif',
+  ]
 ];
 
 class FeedbackAction extends StatelessWidget {
@@ -75,8 +98,16 @@ class FeedbackAction extends StatelessWidget {
       num = 1;
     } else if (face == 'c') {
       num = 2;
-    } else {
+    } else if (face == 'd') {
       num = 3;
+    } else if (face == 'e') {
+      num = 4;
+    } else if (face == 'f') {
+      num = 5;
+    } else if (face == 'g') {
+      num = 6;
+    } else {
+      num = 0;
     }
     return num;
   }
@@ -85,15 +116,14 @@ class FeedbackAction extends StatelessWidget {
   Widget build(BuildContext context) {
     int sum = data['Sum'];
     List idList = _returnID(data['ID']);
-    String img = imgList[_returnFace(data['ID'][idList[0]]['face'])];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         for (int i = 0; i < sum; i++)
           Image(
               width: 400 / sum,
-              image: AssetImage(
-                  imgList[_returnFace(data['ID'][idList[i]]['face'])]),
+              image: AssetImage(imgList[data['ID'][idList[i]]['head']]
+                  [_returnFace(data['ID'][idList[i]]['face'])]),
               fit: BoxFit.cover),
       ],
     );

@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Demo Home Page'),
+          title: const Text('Feedback Application'),
         ),
         body: const MyHomePage(),
       ),
@@ -51,11 +51,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // ラジオボタンのonChangedハンドラ
   Feedback _radVal = Feedback.all; // 初期値
-
   void _onChanged(value) {
     setState(() {
       _radVal = value;
     });
+  }
+
+  // サーバ選択
+  int _serverSelect(value) {
+    if (value == '2') {
+      return 5002;
+    } else if (value == '3') {
+      return 5003;
+    } else {
+      return 5001;
+    }
   }
 
   @override
@@ -71,7 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextFormField(
               // 文章ガイドを薄く表示
-              decoration: const InputDecoration(hintText: 'port番号を入力してください'),
+              decoration: const InputDecoration(
+                  hintText: ' サーバを選択してください [ 1 / 2 / 3 ]'),
               // Boxに入力されているかを判定．されていなければ以下の文章を返す．
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -118,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       MaterialPageRoute(
                           builder: (context) => FirstPage(
                                 rcvjson: _rcvjson,
-                                port: _port,
+                                port: _serverSelect(_port),
                                 radVal: _radVal,
                               )));
                 }
